@@ -1,0 +1,19 @@
+.mainDiv {
+    width: 200px;
+    height: 200px;
+    border: 1px solid black;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: auto;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+.noDiv {
+    width: 48px;
+    height: auto;
+    border: 1px solid red;
+}
