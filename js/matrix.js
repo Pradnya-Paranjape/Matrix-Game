@@ -1,12 +1,6 @@
-const originalMatrix = [1,2,3,4,5,6,7,8,9,10,11,0];
-const generatedMatrix = [];
-const totalNoOfElements = 12;
-const totalRows = 3;
-let elementsToMove = [];
-const noOfElementPerRow = originalMatrix.length/totalRows;
-let emptyElement = null;
-let indexEmptyRowEle = null;
-let rowIndexContainingEmpty = 0;
+const originalMatrix = [1,2,3,4,5,6,7,8,9,10,11,0], totalNoOfElements = 12, totalRows = 3, noOfElementPerRow = originalMatrix.length/totalRows;
+let rows = [], nos = [];
+let elementsToMove = [], indexEmptyRowEle = null, rowIndexContainingEmpty = 0;
 let dragged = '';
 function sample () {
     return originalMatrix[Math.floor(Math.random()*originalMatrix.length)];
@@ -38,57 +32,63 @@ function drop(ev) {
 }
 
 function restructureElements() {
+    const validateArr = [];
     const children = document.getElementById('mainDiv').childNodes;
     const childNodesLength = children.length;
-    const rows = [];
-    let nos = [];
+    rows = [], nos = [];
     for(let i=0; i<childNodesLength; i++) {
         if(children[i] && children[i].id) {
             const content = parseInt(children[i].textContent);
-            nos.push(content);
-            const itemsInRow = nos.length;
-            if(content === 0) {
-                indexEmptyRowEle = itemsInRow - 1;
-                rowIndexContainingEmpty = rows.length;
-            }
-            if(itemsInRow === noOfElementPerRow) {
-                rows.push(nos);
-                nos = [];
-            }
+            validateArr.push(content);
+            const len = rows.length;
+            pushToRow(content, len);
         }
     }
+
     highlightNeighbouringElemets(rows);
 }
 
+compareWithOriginalArr() {
+      
+}
+
+function createNewDivElement(pickedNo) {
+    let divElement = document.createElement('div');
+    divElement.className = 'noDiv';
+    divElement.draggable = true;
+    divElement.ondragstart = drag;
+    divElement.innerHTML = pickedNo;
+    divElement.id = pickedNo + 'no';
+    if(pickedNo === 0) {
+        divElement.className = 'emptyClass noDiv';
+        divElement.ondrop = drop;
+        divElement.ondragover = allowDrop;
+    }
+    return divElement;
+}
+
+function pushToRow(pickedNo, len) {
+    nos.push(pickedNo);
+    const itemsInRow = nos.length;
+    if(itemsInRow === noOfElementPerRow) {
+        rows.push(nos);
+        nos = [];
+    }
+    if(pickedNo === 0) {
+        indexEmptyRowEle = itemsInRow - 1;
+        rowIndexContainingEmpty = (len === 0) ? 0 : len;
+    }
+}
 
 function load() {
+    rows = [], nos = [];
     let mainDiv = document.getElementById('mainDiv'); 
-    const rows = [];
-    let nos = [];
     for(let i=0;i<totalNoOfElements;i++) {
         const pickedNo = sample();
-        let divElement = document.createElement('div');
-        divElement.className = 'noDiv';
-        divElement.innerHTML = pickedNo;
-        divElement.id = pickedNo + 'no';
+        let divElement = createNewDivElement(pickedNo);
         const index = originalMatrix.indexOf(pickedNo);
-        nos.push(pickedNo);
-        const itemsInRow = nos.length;
-        if(itemsInRow === noOfElementPerRow) {
-            rows.push(nos);
-            nos = [];
-        } 
-        divElement.draggable = true;
-        divElement.ondragstart = drag;
-        if(pickedNo === 0) {
-            indexEmptyRowEle = itemsInRow - 1;
-            rowIndexContainingEmpty = rows.length;
-            emptyElement = i;
-            divElement.className = 'emptyClass noDiv';
-            divElement.ondrop = drop;
-            divElement.ondragover = allowDrop;
-        }
-        generatedMatrix.push(pickedNo);
+        const len = rows.length;
+        pushToRow(pickedNo, len);
         originalMatrix.splice(index, 1); 
         mainDiv.appendChild(divElement);
     } 
