@@ -1,4 +1,5 @@
 const originalMatrix = [1,2,3,4,5,6,7,8,9,10,11,0], totalNoOfElements = 12, totalRows = 3, noOfElementPerRow = originalMatrix.length/totalRows;
+const resolvedMatrix = [1,2,3,4,5,6,7,8,9,10,11,0];
 let rows = [], nos = [];
 let elementsToMove = [], indexEmptyRowEle = null, rowIndexContainingEmpty = 0;
 let dragged = '';
@@ -44,11 +45,14 @@ function restructureElements() {
             pushToRow(content, len);
         }
     }
-
-    highlightNeighbouringElemets(rows);
+    if(JSON.stringify(validateArr) === JSON.stringify(resolvedMatrix)) {
+        alert('Congrats');
+    } else {
+        highlightNeighbouringElemets(rows);
+    }
 }
 
-compareWithOriginalArr() {
+function compareWithOriginalArr() {
       
 }
 
